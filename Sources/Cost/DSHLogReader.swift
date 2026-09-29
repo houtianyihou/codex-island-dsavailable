@@ -41,8 +41,16 @@ enum DSHLogReader {
         }
         let executable = ["/opt/homebrew/bin/zstd", "/usr/local/bin/zstd", "/usr/bin/zstd"].first { fm.isExecutableFile(atPath: $0) }
         var result = Scan(buckets: [], unreadableFiles: 0)
+        var sessions: [URL: URL] = [:]
         for case let url as URL in files {
-            guard url.lastPathComponent == "session.v3.jsonl.zstd" else { continue }
+            guard ["session.v3.jsonl.zstd", "session.v4.jsonl.zstd"].contains(url.lastPathComponent) else { continue }
+            let directory = url.deletingLastPathComponent()
+            // Migration keeps the old log; v4 contains the migrated history plus new events.
+            if sessions[directory] == nil || url.lastPathComponent == "session.v4.jsonl.zstd" {
+                sessions[directory] = url
+            }
+        }
+        for url in sessions.values {
             guard let executable else { result.unreadableFiles += 1; continue }
             let process = Process()
             process.executableURL = URL(fileURLWithPath: executable)

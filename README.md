@@ -33,7 +33,7 @@ providers' own usage endpoints.
 This fork of [ericjypark/codex-island](https://github.com/ericjypark/codex-island) adds DeepSeek support, maintained by houtianyihou. The original MIT license and attribution are retained.
 
 - DeepSeek API balance and history readings from the embedded official usage page.
-- DSH token activity from local `session.v3.jsonl.zstd` files, counting only `assistant/message.data.usage` to avoid stream duplicates.
+- DSH token activity from local `session.v3.jsonl.zstd` / `session.v4.jsonl.zstd` files, counting only `assistant/message.data.usage` to avoid stream duplicates.
 - Independently configurable provider columns and display styles.
 - Builds for **Apple Silicon (M-series), macOS 13+**.
 
@@ -185,7 +185,7 @@ defaults write dev.codexisland.CodexIsland MacIsland.deepSeekKeyFile -string "$H
 Create the file yourself and restrict access, for example with `chmod 600`. Without an override, the current default is `~/Desktop/key/key`. Balance requests go to the official DeepSeek API. Never commit the key.
 
 3. Web history uses a separate login: choose **Open DeepSeek**, sign in to the embedded official page, and open usage. An API key does not replace this login.
-4. For DSH token activity, install `zstd` (`brew install zstd`) and retain session logs under `~/.dsh/sessions/`. This dependency is optional if you do not use DSH.
+4. For DSH token activity, install `zstd` (`brew install zstd`) and retain session logs under `~/.dsh/sessions/`. Both CLI v3 and GUI v4 session logs are supported. When both versions exist for one session, only v4 is counted to avoid duplicating migrated history. This dependency is optional if you do not use DSH.
 
 ## Using the app
 
